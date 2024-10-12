@@ -13,10 +13,10 @@ The library currently supports:
 - Rendering from within an object with `internal` enabled
 - Angled lights
 - Control over light block threshold
-- Point lights (lights coming from a flat plane will get support added soon)
+- Point lights (lights coming from a flat plane and other geometries will get support added soon)
 
-All of which allow for amazing effects, including flickering, cycling gradients, and even more complex ones like windows that only allow certain colors!
-
+All of which allow for amazing effects, including flickering, cycling gradients, and even more complex ones like windows that only allow certain colors! <br/>
+The library is also incredibly performant since all calculations are done on the GPU's side and optimized for its parallel architecture. Not only that, but it'll be optimized even further by utilizing instancing in the future :D
 
 There's an example for how to use the library in https://github.com/RandomGamingDev/p5.Glow/tree/main/example with its result visible [here](https://randomgamingdev.github.io/p5.Glow/example/)
 
