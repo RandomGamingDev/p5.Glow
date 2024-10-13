@@ -57,9 +57,9 @@ class Glow {
   }
   
   filter() {
-    glow.light_buf.begin();
+    this.light_buf.begin();
     this.rdr.filter(...arguments);
-    glow.light_buf.end();
+    this.light_buf.end();
   }
   
   render() {
@@ -83,7 +83,7 @@ class Glow {
     else
       this.rdr.background(background_color);
 
-    this.rdr.image(glow.gradients[gradient_id], -this.canvas.width / 2, -this.canvas.height / 2, this.canvas.width, this.canvas.height);
+    this.rdr.image(this.gradients[gradient_id], -this.canvas.width / 2, -this.canvas.height / 2, this.canvas.width, this.canvas.height);
 
     push();
     {
