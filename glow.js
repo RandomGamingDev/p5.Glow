@@ -27,7 +27,7 @@ class Glow {
     this.gradients.pop(gradient_id);
   }
   
-  queue_point_light(x, y, gradient, center_uv, edge_uv, radius, preprocess_buf, slice_density, sample_length, internal = false, angle_range = [0.0, 2 * Math.PI], threshold = 1) {
+  queue_point_light(x, y, gradient, center_uv, edge_uv, radius, preprocess_buf, slice_density, sample_length, internal = false, ignore_collision_radius = 0, angle_range = [0.0, 2 * Math.PI], threshold = 1) {
     this.light_buf.begin();
     {
       this.rdr.shader(Glow.shader);
@@ -39,6 +39,7 @@ class Glow {
       Glow.shader.setUniform("sampleLength", sample_length);
       Glow.shader.setUniform("screenDims", [this.canvas.width, this.canvas.height]);
       Glow.shader.setUniform("internal", internal);
+      Glow.shader.setUniform("ignoreRadius", ignore_collision_radius);
       Glow.shader.setUniform("angleOff", angle_range[0]);
       Glow.shader.setUniform("threshold", threshold);
       {
@@ -126,6 +127,7 @@ uniform float sampleLength;
 uniform int sliceDensity;
 uniform ivec2 screenDims;
 uniform bool internal;
+uniform float ignoreRadius;
 uniform float angleOff;
 uniform float threshold;
 
@@ -142,22 +144,22 @@ void main() {
   float numSamples = radius / sampleLength;
   vec2 vpDist = vec / (numSamples * vec2(screenDims));
 
-  vec2 cursor = 0.5 + aPosition.xy / vec2(screenDims);
-  float i = 0.0;
+  float i = ignoreRadius;
+  vec2 cursor = 0.5 + aPosition.xy / vec2(screenDims) + vpDist * i / sampleLength;
   if (internal) {
-    for (; i < numSamples; i += 1.0) {
+    for (; i < radius; i += sampleLength) {
       if (texture(preprocessTex, cursor).a < threshold)
         break;
       cursor += vpDist;
     }
   }
-  for (; i < numSamples; i += 1.0) {
+  for (; i < radius; i += sampleLength) {
     if (texture(preprocessTex, cursor).a >= threshold)
       break;
     cursor += vpDist;
   }
 
-  vTexCoord = centerUV + (i / numSamples) * (aTexCoord - centerUV);
+  vTexCoord = centerUV + (i / radius) * (aTexCoord - centerUV);
   vec4 positionVec4 = vec4(vec2(screenDims) * (cursor - 0.5), 0.0, 1.0);
   gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
 }`;
