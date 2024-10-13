@@ -9,22 +9,29 @@ class Glow {
     this.gradients = [];
   }
   
-  push_gradient(gradient) {
-    const img = this.rdr.createImage(gradient[0].length, gradient.length);
+  // Create gradient
+  create_gradient(gradient_list) {
+    const img = this.rdr.createImage(gradient_list[0].length, gradient_list.length);
     img.loadPixels();
     {
-      for (const i in gradient) {
-        const moment_gradient = gradient[i];
+      for (const i in gradient_list) {
+        const moment_gradient = gradient_list[i];
         for (const j in moment_gradient)
           img.set(j, i, moment_gradient[j]);
       }
     }
     img.updatePixels();
-    return this.gradients.push(img) - 1;
+    return img;
   }
-  
-  pop_gradient(gradient_id) {
-    this.gradients.pop(gradient_id);
+
+  // Add a new gradient for lighting
+  push_gradient(gradient_list) {
+    return this.gradients.push(this.create_gradient(gradient_list)) - 1;
+  }
+
+  // Add the black to white gradient
+  push_black_to_white_gradient() {
+    return this.push_gradient([[[255, 255, 255, 255], [255, 255, 255, 0]]]);
   }
   
   queue_point_light(x, y, gradient, center_uv, edge_uv, radius, preprocess_buf, slice_density, sample_length, internal = false, ignore_collision_radius = 0, angle_range = [0.0, 2 * Math.PI], threshold = 1) {
@@ -76,6 +83,12 @@ class Glow {
   render_flush() {
     this.render();
     this.flush();
+  }
+
+  postprocess(callback) {
+    this.light_buf.begin();
+    callback();
+    this.light_buf.end();
   }
 
   debug_view_gradient(gradient_id, uvs, uvs_disp_color = [255, 0, 0, 255], background_color = [0, 0, 0, 255]) {

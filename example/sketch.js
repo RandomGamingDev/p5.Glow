@@ -35,9 +35,12 @@ function setup() {
   for (const i in rainbow)
     gradient.push(rainbow.slice(i, rainbow.length).concat(rainbow.slice(0, i)));
   animated_rainbow_gradient = glow.push_gradient(gradient);
-  black_to_white_gradient = glow.push_gradient([
+  black_to_white_gradient = glow.push_black_to_white_gradient();
+  /* Which is used in place of
+  glow.push_gradient([
     [[255, 255, 255, 255], [255, 255, 255, 0]],
   ]);
+  */
   rainbow_gradient = glow.push_gradient([
     [
       [255, 0, 0, 255], // RED
