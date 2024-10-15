@@ -77,30 +77,30 @@ function draw() {
   switch (lightType) {
     case LightTypes.NormalWhite:
       glow.queue_point_light(
-        mouseX - width / 2,
-        mouseY - height / 2,
-        black_to_white_gradient,
-        [0.25, 0.5],
-        [0.75, 0.5],
-        100,
-        preprocessingBuffer,
-        2 ** 7,
-        1
+        mouseX - width / 2, // x
+        mouseY - height / 2, // y
+        black_to_white_gradient, // gradient
+        [0.25, 0.5], // center_uv
+        [0.75, 0.5], // edge_uv
+        100, // radius
+        preprocessingBuffer, // preprocess_buf
+        2 ** 7, // slice_density
+        1 // sample_length
       );
       break;
     case LightTypes.TrippyRainbow:
       // Trippy Rainbow Light
       const sample_y = 1.0 - (millis() / 1000) % 1;
       glow.queue_point_light(
-        mouseX - width / 2,
-        mouseY - height / 2,
-        animated_rainbow_gradient,
-        [0, sample_y],
-        [1, sample_y],
-        100,
-        preprocessingBuffer,
-        2 ** 7,
-        1
+        mouseX - width / 2, // x
+        mouseY - height / 2, // y
+        animated_rainbow_gradient, // gradient
+        [0, sample_y], // center_uv
+        [1, sample_y], // edge_uv
+        100, // radius
+        preprocessingBuffer, // preprocess_buf
+        2 ** 7, // slice_density
+        1 // sample_length
       );
       break;
   }
